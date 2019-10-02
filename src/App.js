@@ -1,15 +1,22 @@
 import React, {Component} from 'react';
 import loader from './images/loader.svg';
 import Gif from './Gif';
+import clearButton from './images/close-icon.svg';
 
 const randomChoice = arr => {
 	const randIndex = Math.floor(Math.random() * arr.length);
 	return arr[randIndex];
 };
 
-const Header = () => (
+const Header = ({clearSearch, hasResults}) => (
 	<div className="header grid">
-		<h1 className="title">Jiffy</h1>
+		{hasResults ? (
+			<button>
+				<img src={clearButton} alt="Clear button" onClick={clearSearch} />
+			</button>
+		) : (
+			<h1 className="title">Jiffy</h1>
+		)}
 	</div>
 );
 
@@ -25,7 +32,6 @@ class App extends Component {
 			loading: false,
 			searchTerm: '',
 			hintText: '',
-			gif: null,
 			gifs: []
 		};
 	}
@@ -63,7 +69,6 @@ class App extends Component {
 
 			this.setState((prevState, props) => ({
 				...prevState,
-				gif: randomGif,
 				// here we use our spread to take the previous gifs and
 				// spread them out, and then add or new randomGif to the end
 				gifs: [...prevState.gifs, randomGif],
@@ -105,11 +110,24 @@ class App extends Component {
 		}));
 	};
 
+	// here we reset our state by clearing everything out
+	// and making it default again
+
+	clearSearch = () => {
+		this.setState((prevState, props) => ({
+			...prevState,
+			searchTerm: '',
+			hintText: '',
+			gifs: []
+		}));
+	};
+
 	render() {
-		const {searchTerm} = this.state;
+		const {searchTerm, gifs} = this.state;
+		const hasResults = gifs.length;
 		return (
 			<div className="page">
-				<Header />
+				<Header clearSearch={this.clearSearch} hasResults={hasResults} />
 				<div className="search grid">
 					{/* Our stack of gif images */}
 					{/* it's only going to render our video when we have a gif in the state */}
