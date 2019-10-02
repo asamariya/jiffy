@@ -22,6 +22,7 @@ class App extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
+			loading: false,
 			searchTerm: '',
 			hintText: '',
 			gif: null,
@@ -36,6 +37,11 @@ class App extends Component {
 	// we can also write async methods into our components
 	// that let us use the async/await style of functions
 	searchGiphy = async searchTerm => {
+		// here we set our loading state to be true
+		// and this will show the spinner at the bottom
+		this.setState({
+			loading: true
+		});
 		// first we try our fetch
 		try {
 			// here we use the await keyword to wait for our response to come back
@@ -46,20 +52,33 @@ class App extends Component {
 			// const {data} gets the .data part of our response
 			const {data} = await response.json();
 
+			//here we check if the array of results is empty
+			// if it is, we throw an error which will stop
+			// the code here and handle it in the catch area
+			if (!data.length) {
+				throw `Nothing found for ${searchTerm}`;
+			}
 			// here we grab a random result from our images
-
 			const randomGif = randomChoice(data);
-			console.log(randomGif);
 
 			this.setState((prevState, props) => ({
 				...prevState,
 				gif: randomGif,
 				// here we use our spread to take the previous gifs and
 				// spread them out, and then add or new randomGif to the end
-				gifs: [...prevState.gifs, randomGif]
+				gifs: [...prevState.gifs, randomGif],
+				// we turn off our loading spinner again
+				loading: false
 			}));
 			// if our fetch fails, we catch it down here
-		} catch (error) {}
+		} catch (error) {
+			this.setState((prevState, props) => ({
+				...prevState,
+				hintText: error,
+				loading: false
+			}));
+			console.log(error);
+		}
 	};
 
 	handleKeyPress = event => {
