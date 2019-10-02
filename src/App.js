@@ -56,7 +56,7 @@ class App extends Component {
 			// if it is, we throw an error which will stop
 			// the code here and handle it in the catch area
 			if (!data.length) {
-				throw `Nothing found for ${searchTerm}`;
+				throw new Error(`Nothing found for ${searchTerm}`);
 			}
 			// here we grab a random result from our images
 			const randomGif = randomChoice(data);
@@ -74,10 +74,9 @@ class App extends Component {
 		} catch (error) {
 			this.setState((prevState, props) => ({
 				...prevState,
-				hintText: error,
+				hintText: String(error),
 				loading: false
 			}));
-			console.log(error);
 		}
 	};
 
