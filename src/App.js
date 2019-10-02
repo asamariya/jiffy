@@ -34,6 +34,7 @@ class App extends Component {
 			hintText: '',
 			gifs: []
 		};
+		this.textInput = React.createRef();
 	}
 
 	// we want a function that searches the giphy api using fetch
@@ -120,6 +121,7 @@ class App extends Component {
 			hintText: '',
 			gifs: []
 		}));
+		this.textInput.current.focus();
 	};
 
 	render() {
@@ -143,6 +145,7 @@ class App extends Component {
 						onChange={this.handleChange}
 						onKeyPress={this.handleKeyPress}
 						value={searchTerm}
+						ref={this.textInput}
 					/>
 				</div>
 				<UserHint {...this.state} />
