@@ -1,6 +1,11 @@
 import React, {Component} from 'react';
 import loader from './images/loader.svg';
 
+const randomChoice = arr => {
+	const randIndex = Math.floor(Math.random() * arr.length);
+	return arr[randIndex];
+};
+
 const Header = () => (
 	<div className="header grid">
 		<h1 className="title">Jiffy</h1>
@@ -17,7 +22,8 @@ class App extends Component {
 		super(props);
 		this.state = {
 			searchTerm: '',
-			hintText: ''
+			hintText: '',
+			gif: null
 		};
 	}
 
@@ -35,11 +41,22 @@ class App extends Component {
 				`https://api.giphy.com/v1/gifs/search?api_key=frzJZgXDzDP5ezre7rfuRIhWvfovmaUY&q=${searchTerm}&limit=25&offset=0&rating=G&lang=en`
 			);
 			// here we convert our raw resonse into json data
-			const data = await response.json();
-			console.log(data);
+			// const {data} gets the .data part of our response
+			const {data} = await response.json();
+
+			// here we grab a random result from our images
+
+			const randomGif = randomChoice(data);
+			console.log(randomGif);
+
+			this.setState((prevState, props) => ({
+				...prevState,
+				gif: randomGif
+			}));
 			// if our fetch fails, we catch it down here
 		} catch (error) {}
 	};
+
 	handleKeyPress = event => {
 		const {value} = event.target;
 		// When we have 2 or more characters in our search box
@@ -65,12 +82,17 @@ class App extends Component {
 	};
 
 	render() {
-		const {searchTerm} = this.state;
+		const {searchTerm, gif} = this.state;
 		return (
 			<div className="page">
 				<Header />
 				<div className="search grid">
 					{/* Our stack of gif images */}
+					{/* it's only going to render our video when we have a gif in the state */}
+					{gif && (
+						<video src={gif.images.original.mp4} className="grid-item video" autoPlay loop></video>
+					)}
+
 					<input
 						type="text"
 						className="input grid-item"
