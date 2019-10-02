@@ -18,6 +18,7 @@ class Gif extends Component {
 				// when we have the loaded state as true, we add a loaded class
 				// && is like an if statement, without else
 				className={`grid-item video ${loaded && 'loaded'}`}
+				playsinline
 				autoPlay
 				loop
 				onLoadedData={() => this.setState({loaded: true})}
